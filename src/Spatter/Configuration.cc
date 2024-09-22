@@ -4,8 +4,11 @@
 
 #include <numeric>
 #include <atomic>
+#include "row_buffer_analysis.hh"
 
 #include "Configuration.hh"
+
+#define ROW_BUFFER_ANALYSIS
 
 namespace Spatter {
 
@@ -280,6 +283,27 @@ void ConfigurationBase::setup() {
       std::cout << std::endl;
     }
   }
+
+
+  // Run row buffer analysis if defined
+#ifdef ROW_BUFFER_ANALYSIS
+  std::vector<u_int> idx;
+  for (size_t i = 0; i < count; ++i)
+    for (size_t j = 0; j < pattern.size(); j++) {
+      idx.push_back(pattern[j] + delta * i);
+    }
+  u_int length = count * pattern.size();
+  // analysis for 1024 bytes tile
+  analysis(length, 1024, idx.data(), sizeof(double));
+  // analysis for 2048 bytes tile
+  analysis(length, 2048, idx.data(), sizeof(double));
+  // analysis for 4096 bytes tile
+  analysis(length, 4096, idx.data(), sizeof(double));
+  // analysis for 8192 bytes tile
+  analysis(length, 8192, idx.data(), sizeof(double));
+  // analysis for 16384 bytes tile
+  analysis(length, 16384, idx.data(), sizeof(double));
+#endif
 }
 
 void ConfigurationBase::print_no_mpi(
@@ -412,16 +436,14 @@ Configuration<Spatter::Serial>::Configuration(const size_t id,
 void Configuration<Spatter::Serial>::gather(bool timed, unsigned long run_id) {
   size_t pattern_length = pattern.size();
 
-#ifdef USE_MPI
-  MPI_Barrier(MPI_COMM_WORLD);
-#endif
-
   if (timed)
     timer.start();
 
   for (size_t i = 0; i < count; ++i)
-    for (size_t j = 0; j < pattern_length; ++j)
+    for (size_t j = 0; j < pattern_length; ++j){
       dense[j + pattern_length * (i % wrap)] = sparse[pattern[j] + delta * i];
+    }
+      
 
   if (timed) {
     timer.stop();
