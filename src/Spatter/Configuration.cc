@@ -293,16 +293,17 @@ void ConfigurationBase::setup() {
       idx.push_back(pattern[j] + delta * i);
     }
   u_int length = count * pattern.size();
-  // analysis for 1024 bytes tile
-  analysis(length, 1024, idx.data(), sizeof(double));
-  // analysis for 2048 bytes tile
-  analysis(length, 2048, idx.data(), sizeof(double));
   // analysis for 4096 bytes tile
   analysis(length, 4096, idx.data(), sizeof(double));
   // analysis for 8192 bytes tile
   analysis(length, 8192, idx.data(), sizeof(double));
   // analysis for 16384 bytes tile
   analysis(length, 16384, idx.data(), sizeof(double));
+  // analysis for 32768 bytes tile
+  analysis(length, 32768, idx.data(), sizeof(double));
+  // analysis for 65536 bytes tile
+  analysis(length, 65536, idx.data(), sizeof(double));
+
 #endif
 }
 

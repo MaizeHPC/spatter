@@ -48,12 +48,14 @@ set_target_properties(Spatter_shared PROPERTIES
 target_include_directories(Spatter
     PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../experiments>  # Add this line
     $<INSTALL_INTERFACE:include/Spatter>
 )
 
 target_include_directories(Spatter_shared
     PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../experiments>  # Add this line
     $<INSTALL_INTERFACE:include/Spatter>
     )
 
