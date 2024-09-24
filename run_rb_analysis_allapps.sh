@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Directory containing the JSON files
-APP_TRACES_DIR="./standard-suite/app-traces"
+APP_TRACES_DIR="./standard-suite/lanl-traces"
 
 # Check if spatter executable exists
 if [ ! -f "./build_serial/spatter" ]; then

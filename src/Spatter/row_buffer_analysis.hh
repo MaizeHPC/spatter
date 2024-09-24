@@ -42,8 +42,8 @@ void analysis(u_int length, u_int tile_size, u_int* idx, u_int element_size) {
     // Evaluation: for each tile, analyze how many unique row buffers are accessed
     std::cout << "Length is " << length << "; tile size is " << tile_size << " bytes;" << " element size " << element_size << " bytes" << std::endl;
     tile_size = tile_size / element_size;
-    double sum_average_elements_per_row = 0;
-    double sum_average_elements_per_row_cache_miss = 0;
+    double sum_unique_row = 0;
+    double sum_unique_row_cache_miss = 0;
     Cache<131072> cache;
     int num_cache_misses = 0;
     u_int num_tiles = length % tile_size == 0 ? length / tile_size : length / tile_size + 1;
@@ -62,14 +62,10 @@ void analysis(u_int length, u_int tile_size, u_int* idx, u_int element_size) {
             }
         }
         num_cache_misses += num_cache_misses_tile;
-        u_int length_of_tile = std::min(tile_size, length - i);
-        double average_elements_per_row = length_of_tile / double(unique_row_buffers.size());
-        double average_elements_per_row_cache_miss = num_cache_misses_tile / double(unique_row_buffers_cache_miss.size());
-        sum_average_elements_per_row += average_elements_per_row;
-        sum_average_elements_per_row_cache_miss += average_elements_per_row_cache_miss;
-        // std::cout << "Tile " << i << " accesses " << unique_row_buffers.size() << " unique row buffers; average row buffer access " << average_elements_per_row << std::endl;
+        sum_unique_row += unique_row_buffers.size();
+        sum_unique_row_cache_miss += unique_row_buffers_cache_miss.size();
     }
-    std::cout << "Average elements per row " << sum_average_elements_per_row / num_tiles << std::endl;
-    std::cout << "Average elements per row (cache miss) " << sum_average_elements_per_row_cache_miss / num_tiles << std::endl;
+    std::cout << "Average elements per row " << length / sum_unique_row  << std::endl;
+    std::cout << "Average elements per row (cache miss) " <<  num_cache_misses / sum_unique_row_cache_miss  << std::endl;
     std::cout << "Average hit rate " << (float)(length - num_cache_misses) * 100.00 / (float)(length) << std::endl;
 }
